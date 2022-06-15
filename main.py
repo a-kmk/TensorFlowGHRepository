@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+fig, ax = plt.subplots()
 tf = pd.read_csv('tensorflow_data.csv')
 
 #dimensions
@@ -37,6 +38,7 @@ counts = tf.groupby(['month', 'year'])['number'].sum().plot(kind='bar')
 plt.ylabel("Number of changes")
 plt.xlabel("Month and Year of changes")
 plt.title("Recent Contributions to the TensorFlow Repository")
+fig.tight_layout()
 plt.show()
 
 #show distribution of users and contributions
