@@ -40,14 +40,16 @@ plt.title("Recent Contributions to the TensorFlow Repository")
 plt.show()
 
 #show distribution of users and contributions
-by_user = tf.groupby('author.login')["number"].count()
-by_user.hist()
+user_dist = tf.groupby('author.login')["number"].count()
+user_dist.hist()
 plt.title("Distribution of users working on the repository")
 plt.xlabel("Number of users")
 plt.ylabel("Number of changes")
 plt.show()
 
-# contributions by user
-author_counts = tf.groupby("author.login")["number"].count()
-print(author_counts)
+# contributions by top 20 users
+author_counts = tf.groupby("author.login")["number"].count().nlargest(20)
+ax = author_counts.plot.bar(title="Contribution of top 20 users", xlabel="Number of changes", ylabel="usernames")
+plt.show()
+
 
