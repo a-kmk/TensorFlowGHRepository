@@ -31,8 +31,23 @@ tf['date'] = pd.to_datetime(tf['createdAt'], utc=True, format="%d/%m/%Y")
 # Separate date further into month and year columns
 tf['month'] = tf['date'].dt.month
 tf['year'] = tf['date'].dt.year
+
 #aggregate amount of repository changes by year and month to see how active the project has been recently
 counts = tf.groupby(['month', 'year'])['number'].sum().plot(kind='bar')
 plt.ylabel("Number of changes")
 plt.xlabel("Month and Year of changes")
+plt.title("Recent Contributions to the TensorFlow Repository")
 plt.show()
+
+#show distribution of users and contributions
+by_user = tf.groupby('author.login')["number"].count()
+by_user.hist()
+plt.title("Distribution of users working on the repository")
+plt.xlabel("Number of users")
+plt.ylabel("Number of changes")
+plt.show()
+
+# contributions by user
+author_counts = tf.groupby("author.login")["number"].count()
+print(author_counts)
+
