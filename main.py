@@ -51,7 +51,8 @@ plt.show()
 
 # contributions by top 20 users
 author_counts = tf.groupby("author.login")["number"].count().nlargest(20)
-ax = author_counts.plot.bar(title="Contribution of top 20 users", xlabel="Number of changes", ylabel="usernames")
+ax = author_counts.plot.bar(title="Contribution of top 20 users", xlabel="Usernames", ylabel="Number of Changes")
+plt.subplots_adjust(bottom=0.4)
 plt.show()
 
 
