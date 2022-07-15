@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import seaborn as sns
 
 fig, ax = plt.subplots()
@@ -33,32 +34,39 @@ tf['date'] = pd.to_datetime(tf['createdAt'], utc=True, format="%d/%m/%Y")
 # Separate date further into month and year columns
 tf['month'] = tf['date'].dt.month
 tf['year'] = tf['date'].dt.year
+tf['day'] = tf['date'].dt.day
 
 #aggregate amount of repository changes by year and month to see how active the project has been recently
 counts = tf.groupby(['month', 'year'])['number'].sum().reset_index()
-#avg = df.groupby("b", sort=False)["a"].mean()\.reset_index(name="mean")
-#counts.rename(columns = {'month':'month', 'year':'year', '':'sum'}, inplace = True)
+sns.set_style("darkgrid")
+sns.set_palette('muted')
+counts['labels'] = counts['month'].astype("int").astype("string") + "-" + counts['year'].astype("int").astype("string")
+ax = sns.barplot(x='labels', y='number',data=counts, order= counts.sort_values(['year', 'month'], ascending=[True, True]).labels)
 
-print(counts)
-ax = sns.barplot(x='month', y='number',data=counts, order= counts.sort_values(['year', 'month'], ascending=[True, True]).month)
-#plt.title("Recent Contributions to the TensorFlow Repository")
-#fig.tight_layout()
+
+plt.ylabel("Commits")
+plt.title("Recent Contributions to the TensorFlow Repository")
+plt.ticklabel_format(style='plain', axis='y') #surpresses scientific notation
+ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+plt.tight_layout()
 plt.show()
 
 #show distribution of users and contributions
-user_dist = tf.groupby('author.login')["number"].count().nlargest(20)
+
+user_dist = tf.groupby('author.login')["number"].count()
 sns.histplot(user_dist)
 plt.title("Distribution of users working on the repository")
-plt.xlabel("Number of users")
-plt.ylabel("Number of changes")
+plt.xlabel("Number of Changes")
+plt.ylabel("Users")
 plt.show()
 
 # contributions by top 20 users
 author_counts = tf.groupby("author.login")["number"].count().nlargest(20).reset_index()
-print(author_counts)
 author=sns.barplot(x=author_counts['author.login'], y=author_counts['number'], data=author_counts)
 #ax = author_counts.plot.bar(title="Contribution of top 20 users", xlabel="Usernames", ylabel="Number of Changes")
 plt.subplots_adjust(bottom=0.4)
+plt.xlabel("Usernames")
+plt.title("Top 20 contributors in the last 6 months")
 plt.xticks(rotation=90)
 plt.show()
 
